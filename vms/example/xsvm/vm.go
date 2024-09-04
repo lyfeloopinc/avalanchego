@@ -132,7 +132,7 @@ func (vm *VM) CreateHandlers(context.Context) (map[string]http.Handler, error) {
 
 func (vm *VM) CreateGRPCService(context.Context) (string, http.Handler, error) {
 	server := grpcutils.NewServer()
-	server.RegisterService(&xsvm.Ping_ServiceDesc, &GRPCService{Log: vm.chainContext.Log})
+	server.RegisterService(&xsvm.Ping_ServiceDesc, &grpcService{Log: vm.chainContext.Log})
 	return xsvm.Ping_ServiceDesc.ServiceName, server, nil
 }
 
