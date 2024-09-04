@@ -199,8 +199,6 @@ var _ = ginkgo.Describe("[XSVM]", func() {
 
 			for i := 0; i < n; i++ {
 				msg := fmt.Sprintf("ping-%d", i)
-				tc.Outf("ping: %s\n", msg)
-
 				require.NoError(stream.Send(&xsvm.StreamPingRequest{
 					Message: msg,
 				}))
@@ -213,8 +211,6 @@ var _ = ginkgo.Describe("[XSVM]", func() {
 			for i := 0; i < n; i++ {
 				reply, err := stream.Recv()
 				require.NoError(err)
-
-				tc.Outf("pong: %s\n", reply.Message)
 				require.Equal(fmt.Sprintf("ping-%d", i), reply.Message)
 			}
 		}()
