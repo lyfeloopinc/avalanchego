@@ -121,10 +121,10 @@ func New(
 	}
 
 	router := newRouter()
-	handler := wrap(router, nodeID, allowedOrigins, allowedHosts)
+	handler := wrapHandler(router, nodeID, allowedOrigins, allowedHosts)
 
 	grpcRouter := newGRPCRouter()
-	grpcHandler := wrap(grpcRouter, nodeID, allowedOrigins, allowedHosts)
+	grpcHandler := wrapHandler(grpcRouter, nodeID, allowedOrigins, allowedHosts)
 
 	httpServer := &http.Server{
 		Handler: h2c.NewHandler(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
@@ -217,7 +217,7 @@ func (s *server) RegisterChain(chainName string, ctx *snow.ConsensusContext, vm 
 		return
 	}
 
-	grpcHandler = s.wrapHandler(chainName, grpcHandler, ctx)
+	grpcHandler = s.wrapMiddleware(chainName, grpcHandler, ctx)
 	if err := s.grpcRouter.Add(serviceName, grpcHandler); err != nil {
 		s.log.Error("failed to add route to grpc service", zap.Error(err))
 	}
@@ -229,11 +229,11 @@ func (s *server) addChainRoute(chainName string, handler http.Handler, ctx *snow
 		zap.String("url", url),
 		zap.String("endpoint", endpoint),
 	)
-	handler = s.wrapHandler(chainName, handler, ctx)
+	handler = s.wrapMiddleware(chainName, handler, ctx)
 	return s.router.AddRouter(url, endpoint, handler)
 }
 
-func (s *server) wrapHandler(chainName string, handler http.Handler, ctx *snow.ConsensusContext) http.Handler {
+func (s *server) wrapMiddleware(chainName string, handler http.Handler, ctx *snow.ConsensusContext) http.Handler {
 	if s.tracingEnabled {
 		handler = api.TraceHandler(handler, chainName, s.tracer)
 	}
@@ -326,7 +326,7 @@ func (a readPathAdder) AddAliases(endpoint string, aliases ...string) error {
 	return a.pather.AddAliasesWithReadLock(endpoint, aliases...)
 }
 
-func wrap(handler http.Handler, nodeID ids.NodeID, allowedOrigins []string, allowedHosts []string) http.Handler {
+func wrapHandler(handler http.Handler, nodeID ids.NodeID, allowedOrigins []string, allowedHosts []string) http.Handler {
 	allowedHostsHandler := filterInvalidHosts(handler, allowedHosts)
 	corsHandler := cors.New(cors.Options{
 		AllowedOrigins:   allowedOrigins,
