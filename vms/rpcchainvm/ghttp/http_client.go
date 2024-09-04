@@ -165,7 +165,7 @@ func (c *Client) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// TODO is this the right place to put this?
+	// Copy headers from the plugin process
 	header := w.Header()
 	clear(header)
 
