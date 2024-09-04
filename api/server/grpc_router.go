@@ -24,13 +24,13 @@ func newGRPCRouter() *grpcRouter {
 }
 
 type grpcRouter struct {
-	lock     sync.Mutex
+	lock     sync.RWMutex
 	handlers map[string]http.Handler
 }
 
 func (g *grpcRouter) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	g.lock.Lock()
-	defer g.lock.Unlock()
+	g.lock.RLock()
+	defer g.lock.RUnlock()
 
 	// Requests take the form of "/Service/Method"
 	parsed := strings.Split(r.RequestURI, "/")
