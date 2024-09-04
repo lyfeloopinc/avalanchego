@@ -168,23 +168,20 @@ var _ = ginkgo.Describe("[XSVM]", func() {
 	ginkgo.It("should serve grpc api requests", func() {
 		tc.By("establishing connection")
 		uri := strings.TrimPrefix(e2e.GetEnv(tc).GetRandomNodeURI().URI, "http://")
-		tc.Outf("uri: %s", uri)
 		conn, err := grpcutils.Dial(uri)
 		require.NoError(err)
 
-		tc.By("serving unary request")
+		tc.By("serving unary rpc")
 		client := xsvm.NewPingClient(conn)
 
 		msg := "foobar"
-		tc.Outf("ping: %s\n", msg)
 		reply, err := client.Ping(tc.DefaultContext(), &xsvm.PingRequest{
 			Message: msg,
 		})
 		require.NoError(err)
-		tc.Outf("pong: %s\n", reply.Message)
 		require.Equal(msg, reply.Message)
 
-		tc.By("serving streaming requests")
+		tc.By("serving bidirectional streaming rpc")
 		stream, err := client.StreamPing(tc.DefaultContext())
 		require.NoError(err)
 
