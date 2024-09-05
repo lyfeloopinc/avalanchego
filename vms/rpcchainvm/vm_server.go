@@ -363,10 +363,15 @@ func (vm *VMServer) CreateHandlers(ctx context.Context, _ *emptypb.Empty) (*vmpb
 	return resp, nil
 }
 
-func (vm *VMServer) CreateGRPCService(ctx context.Context, _ *emptypb.Empty) (*vmpb.CreateGRPCHandlerResponse, error) {
+func (vm *VMServer) CreateGRPCService(ctx context.Context, _ *emptypb.Empty) (*vmpb.CreateGRPCServiceResponse, error) {
 	serviceName, handler, err := vm.vm.CreateGRPCService(ctx)
 	if err != nil {
 		return nil, err
+	}
+
+	// The vm does not expose a gRPC service
+	if serviceName == "" && handler == nil {
+		return &vmpb.CreateGRPCServiceResponse{}, nil
 	}
 
 	serverListener, err := grpcutils.NewListener()
@@ -381,7 +386,7 @@ func (vm *VMServer) CreateGRPCService(ctx context.Context, _ *emptypb.Empty) (*v
 	// Start HTTP service
 	go grpcutils.Serve(serverListener, server)
 
-	return &vmpb.CreateGRPCHandlerResponse{
+	return &vmpb.CreateGRPCServiceResponse{
 		ServiceName: serviceName,
 		ServerAddr:  serverListener.Addr().String(),
 	}, nil

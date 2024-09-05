@@ -66,7 +66,7 @@ type VMClient interface {
 	Shutdown(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Creates the HTTP handlers for custom chain network calls.
 	CreateHandlers(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CreateHandlersResponse, error)
-	CreateGRPCService(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CreateGRPCHandlerResponse, error)
+	CreateGRPCService(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CreateGRPCServiceResponse, error)
 	Connected(ctx context.Context, in *ConnectedRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	Disconnected(ctx context.Context, in *DisconnectedRequest, opts ...grpc.CallOption) (*emptypb.Empty, error)
 	// Attempt to create a new block from data contained in the VM.
@@ -163,8 +163,8 @@ func (c *vMClient) CreateHandlers(ctx context.Context, in *emptypb.Empty, opts .
 	return out, nil
 }
 
-func (c *vMClient) CreateGRPCService(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CreateGRPCHandlerResponse, error) {
-	out := new(CreateGRPCHandlerResponse)
+func (c *vMClient) CreateGRPCService(ctx context.Context, in *emptypb.Empty, opts ...grpc.CallOption) (*CreateGRPCServiceResponse, error) {
+	out := new(CreateGRPCServiceResponse)
 	err := c.cc.Invoke(ctx, VM_CreateGRPCService_FullMethodName, in, out, opts...)
 	if err != nil {
 		return nil, err
@@ -411,7 +411,7 @@ type VMServer interface {
 	Shutdown(context.Context, *emptypb.Empty) (*emptypb.Empty, error)
 	// Creates the HTTP handlers for custom chain network calls.
 	CreateHandlers(context.Context, *emptypb.Empty) (*CreateHandlersResponse, error)
-	CreateGRPCService(context.Context, *emptypb.Empty) (*CreateGRPCHandlerResponse, error)
+	CreateGRPCService(context.Context, *emptypb.Empty) (*CreateGRPCServiceResponse, error)
 	Connected(context.Context, *ConnectedRequest) (*emptypb.Empty, error)
 	Disconnected(context.Context, *DisconnectedRequest) (*emptypb.Empty, error)
 	// Attempt to create a new block from data contained in the VM.
@@ -481,7 +481,7 @@ func (UnimplementedVMServer) Shutdown(context.Context, *emptypb.Empty) (*emptypb
 func (UnimplementedVMServer) CreateHandlers(context.Context, *emptypb.Empty) (*CreateHandlersResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateHandlers not implemented")
 }
-func (UnimplementedVMServer) CreateGRPCService(context.Context, *emptypb.Empty) (*CreateGRPCHandlerResponse, error) {
+func (UnimplementedVMServer) CreateGRPCService(context.Context, *emptypb.Empty) (*CreateGRPCServiceResponse, error) {
 	return nil, status.Errorf(codes.Unimplemented, "method CreateGRPCService not implemented")
 }
 func (UnimplementedVMServer) Connected(context.Context, *ConnectedRequest) (*emptypb.Empty, error) {

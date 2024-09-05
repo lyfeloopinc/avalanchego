@@ -748,7 +748,7 @@ func (x *CreateHandlersResponse) GetHandlers() []*Handler {
 	return nil
 }
 
-type CreateGRPCHandlerResponse struct {
+type CreateGRPCServiceResponse struct {
 	state         protoimpl.MessageState
 	sizeCache     protoimpl.SizeCache
 	unknownFields protoimpl.UnknownFields
@@ -760,8 +760,8 @@ type CreateGRPCHandlerResponse struct {
 	ServerAddr string `protobuf:"bytes,2,opt,name=server_addr,json=serverAddr,proto3" json:"server_addr,omitempty"`
 }
 
-func (x *CreateGRPCHandlerResponse) Reset() {
-	*x = CreateGRPCHandlerResponse{}
+func (x *CreateGRPCServiceResponse) Reset() {
+	*x = CreateGRPCServiceResponse{}
 	if protoimpl.UnsafeEnabled {
 		mi := &file_vm_vm_proto_msgTypes[6]
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -769,13 +769,13 @@ func (x *CreateGRPCHandlerResponse) Reset() {
 	}
 }
 
-func (x *CreateGRPCHandlerResponse) String() string {
+func (x *CreateGRPCServiceResponse) String() string {
 	return protoimpl.X.MessageStringOf(x)
 }
 
-func (*CreateGRPCHandlerResponse) ProtoMessage() {}
+func (*CreateGRPCServiceResponse) ProtoMessage() {}
 
-func (x *CreateGRPCHandlerResponse) ProtoReflect() protoreflect.Message {
+func (x *CreateGRPCServiceResponse) ProtoReflect() protoreflect.Message {
 	mi := &file_vm_vm_proto_msgTypes[6]
 	if protoimpl.UnsafeEnabled && x != nil {
 		ms := protoimpl.X.MessageStateOf(protoimpl.Pointer(x))
@@ -787,19 +787,19 @@ func (x *CreateGRPCHandlerResponse) ProtoReflect() protoreflect.Message {
 	return mi.MessageOf(x)
 }
 
-// Deprecated: Use CreateGRPCHandlerResponse.ProtoReflect.Descriptor instead.
-func (*CreateGRPCHandlerResponse) Descriptor() ([]byte, []int) {
+// Deprecated: Use CreateGRPCServiceResponse.ProtoReflect.Descriptor instead.
+func (*CreateGRPCServiceResponse) Descriptor() ([]byte, []int) {
 	return file_vm_vm_proto_rawDescGZIP(), []int{6}
 }
 
-func (x *CreateGRPCHandlerResponse) GetServiceName() string {
+func (x *CreateGRPCServiceResponse) GetServiceName() string {
 	if x != nil {
 		return x.ServiceName
 	}
 	return ""
 }
 
-func (x *CreateGRPCHandlerResponse) GetServerAddr() string {
+func (x *CreateGRPCServiceResponse) GetServerAddr() string {
 	if x != nil {
 		return x.ServerAddr
 	}
@@ -3024,7 +3024,7 @@ var file_vm_vm_proto_rawDesc = []byte{
 	0x64, 0x6c, 0x65, 0x72, 0x73, 0x18, 0x01, 0x20, 0x03, 0x28, 0x0b, 0x32, 0x0b, 0x2e, 0x76, 0x6d,
 	0x2e, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x52, 0x08, 0x68, 0x61, 0x6e, 0x64, 0x6c, 0x65,
 	0x72, 0x73, 0x22, 0x5f, 0x0a, 0x19, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x47, 0x52, 0x50, 0x43,
-	0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
+	0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e, 0x73, 0x65, 0x12,
 	0x21, 0x0a, 0x0c, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x5f, 0x6e, 0x61, 0x6d, 0x65, 0x18,
 	0x01, 0x20, 0x01, 0x28, 0x09, 0x52, 0x0b, 0x73, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x4e, 0x61,
 	0x6d, 0x65, 0x12, 0x1f, 0x0a, 0x0b, 0x73, 0x65, 0x72, 0x76, 0x65, 0x72, 0x5f, 0x61, 0x64, 0x64,
@@ -3274,7 +3274,7 @@ var file_vm_vm_proto_rawDesc = []byte{
 	0x47, 0x52, 0x50, 0x43, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x12, 0x16, 0x2e, 0x67, 0x6f,
 	0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70, 0x72, 0x6f, 0x74, 0x6f, 0x62, 0x75, 0x66, 0x2e, 0x45, 0x6d,
 	0x70, 0x74, 0x79, 0x1a, 0x1d, 0x2e, 0x76, 0x6d, 0x2e, 0x43, 0x72, 0x65, 0x61, 0x74, 0x65, 0x47,
-	0x52, 0x50, 0x43, 0x48, 0x61, 0x6e, 0x64, 0x6c, 0x65, 0x72, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
+	0x52, 0x50, 0x43, 0x53, 0x65, 0x72, 0x76, 0x69, 0x63, 0x65, 0x52, 0x65, 0x73, 0x70, 0x6f, 0x6e,
 	0x73, 0x65, 0x12, 0x39, 0x0a, 0x09, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x12,
 	0x14, 0x2e, 0x76, 0x6d, 0x2e, 0x43, 0x6f, 0x6e, 0x6e, 0x65, 0x63, 0x74, 0x65, 0x64, 0x52, 0x65,
 	0x71, 0x75, 0x65, 0x73, 0x74, 0x1a, 0x16, 0x2e, 0x67, 0x6f, 0x6f, 0x67, 0x6c, 0x65, 0x2e, 0x70,
@@ -3410,7 +3410,7 @@ var file_vm_vm_proto_goTypes = []interface{}{
 	(*SetStateRequest)(nil),                    // 6: vm.SetStateRequest
 	(*SetStateResponse)(nil),                   // 7: vm.SetStateResponse
 	(*CreateHandlersResponse)(nil),             // 8: vm.CreateHandlersResponse
-	(*CreateGRPCHandlerResponse)(nil),          // 9: vm.CreateGRPCHandlerResponse
+	(*CreateGRPCServiceResponse)(nil),          // 9: vm.CreateGRPCServiceResponse
 	(*Handler)(nil),                            // 10: vm.Handler
 	(*BuildBlockRequest)(nil),                  // 11: vm.BuildBlockRequest
 	(*BuildBlockResponse)(nil),                 // 12: vm.BuildBlockResponse
@@ -3519,7 +3519,7 @@ var file_vm_vm_proto_depIdxs = []int32{
 	7,  // 64: vm.VM.SetState:output_type -> vm.SetStateResponse
 	48, // 65: vm.VM.Shutdown:output_type -> google.protobuf.Empty
 	8,  // 66: vm.VM.CreateHandlers:output_type -> vm.CreateHandlersResponse
-	9,  // 67: vm.VM.CreateGRPCService:output_type -> vm.CreateGRPCHandlerResponse
+	9,  // 67: vm.VM.CreateGRPCService:output_type -> vm.CreateGRPCServiceResponse
 	48, // 68: vm.VM.Connected:output_type -> google.protobuf.Empty
 	48, // 69: vm.VM.Disconnected:output_type -> google.protobuf.Empty
 	12, // 70: vm.VM.BuildBlock:output_type -> vm.BuildBlockResponse
@@ -3631,7 +3631,7 @@ func file_vm_vm_proto_init() {
 			}
 		}
 		file_vm_vm_proto_msgTypes[6].Exporter = func(v interface{}, i int) interface{} {
-			switch v := v.(*CreateGRPCHandlerResponse); i {
+			switch v := v.(*CreateGRPCServiceResponse); i {
 			case 0:
 				return &v.state
 			case 1:
