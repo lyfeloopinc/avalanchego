@@ -19,6 +19,8 @@ import (
 	"github.com/ava-labs/avalanchego/ids"
 	"github.com/ava-labs/avalanchego/tests"
 	"github.com/ava-labs/avalanchego/tests/antithesis"
+	"github.com/ava-labs/avalanchego/tests/e2e/banff"
+	"github.com/ava-labs/avalanchego/tests/fixture/e2e"
 	"github.com/ava-labs/avalanchego/tests/fixture/tmpnet"
 	"github.com/ava-labs/avalanchego/utils/constants"
 	"github.com/ava-labs/avalanchego/utils/crypto/secp256k1"
@@ -56,12 +58,7 @@ func main() {
 
 	kc := secp256k1fx.NewKeychain(genesis.EWOQKey)
 	walletSyncStartTime := time.Now()
-	wallet, err := primary.MakeWallet(ctx, &primary.WalletConfig{
-		URI:          c.URIs[0],
-		AVAXKeychain: kc,
-		EthKeychain:  kc,
-	})
-	require.NoError(err, "failed to initialize wallet")
+	wallet := e2e.NewWallet(tc, kc, tmpnet.NodeURI{URI: c.URIs[0]})
 	log.Printf("synced wallet in %s", time.Since(walletSyncStartTime))
 
 	genesisWorkload := &workload{
@@ -176,25 +173,9 @@ func (w *workload) run(ctx context.Context) {
 	})
 
 	for {
-		val, err := rand.Int(rand.Reader, big.NewInt(5))
-		require.NoError(err, "failed to read randomness")
+		w.executeTest(ctx)
 
-		flowID := val.Int64()
-		log.Printf("wallet %d executing flow %d", w.id, flowID)
-		switch flowID {
-		case 0:
-			w.issueXChainBaseTx(ctx)
-		case 1:
-			w.issueXChainCreateAssetTx(ctx)
-		case 2:
-			w.issueXChainOperationTx(ctx)
-		case 3:
-			w.issueXToPTransfer(ctx)
-		case 4:
-			w.issuePToXTransfer(ctx)
-		}
-
-		val, err = rand.Int(rand.Reader, big.NewInt(int64(time.Second)))
+		val, err := rand.Int(rand.Reader, big.NewInt(int64(time.Second)))
 		require.NoError(err, "failed to read randomness")
 
 		timer.Reset(time.Duration(val.Int64()))
@@ -203,6 +184,48 @@ func (w *workload) run(ctx context.Context) {
 			return
 		case <-timer.C:
 		}
+	}
+}
+
+func (w *workload) executeTest(ctx context.Context) {
+	tc := tests.NewTestContext()
+	defer func() {
+		// Recover from test failure unless
+		if r := recover(); r != nil {
+			tc.Cleanup()
+			errorString, ok := r.(string)
+			if !ok || errorString != tests.FailNowMessage {
+				log.Printf("unexpected panic: %s", r)
+				assert.Unreachable("unexpected panic", map[string]any{
+					"worker": w.id,
+					"panic":  r,
+				})
+			}
+		}
+	}()
+	require := require.New(tc)
+
+	val, err := rand.Int(rand.Reader, big.NewInt(6))
+	require.NoError(err, "failed to read randomness")
+
+	flowID := val.Int64()
+	log.Printf("wallet %d executing flow %d", w.id, flowID)
+	switch flowID {
+	case 0:
+		w.issueXChainBaseTx(ctx)
+	case 1:
+		w.issueXChainCreateAssetTx(ctx)
+	case 2:
+		w.issueXChainOperationTx(ctx)
+	case 3:
+		w.issueXToPTransfer(ctx)
+	case 4:
+		w.issuePToXTransfer(ctx)
+	case 5:
+		addr, _ := w.addrs.Peek()
+		banff.TestCustomAssetTransfer(tc, require, w.wallet, addr)
+	case 6:
+		log.Printf("wallet %d is sleeping", w.id)
 	}
 }
 

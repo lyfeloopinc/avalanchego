@@ -61,7 +61,11 @@ func NewPrivateKey(tc tests.TestContext) *secp256k1.PrivateKey {
 
 // Create a new wallet for the provided keychain against the specified node URI.
 func NewWallet(tc tests.TestContext, keychain *secp256k1fx.Keychain, nodeURI tmpnet.NodeURI) primary.Wallet {
-	tc.Outf("{{blue}} initializing a new wallet for node %s with URI: %s {{/}}\n", nodeURI.NodeID, nodeURI.URI)
+	if len(nodeURI.NodeID) == 0 {
+		tc.Outf("{{blue}} initializing a new wallet for URI: %s {{/}}\n", nodeURI.URI)
+	} else {
+		tc.Outf("{{blue}} initializing a new wallet for node %s with URI: %s {{/}}\n", nodeURI.NodeID, nodeURI.URI)
+	}
 	baseWallet, err := primary.MakeWallet(tc.DefaultContext(), &primary.WalletConfig{
 		URI:          nodeURI.URI,
 		AVAXKeychain: keychain,

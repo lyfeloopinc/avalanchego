@@ -11,29 +11,36 @@ import (
 	"os"
 	"time"
 
+	"github.com/antithesishq/antithesis-sdk-go/assert"
 	"github.com/onsi/ginkgo/v2/formatter"
 	"github.com/stretchr/testify/require"
 
 	"github.com/ava-labs/avalanchego/wallet/subnet/primary/common"
 )
 
-const failNowMessage = "SimpleTestContext.FailNow called"
+const FailNowMessage = "SimpleTestContext.FailNow called"
 
 type SimpleTestContext struct {
 	cleanupFuncs  []func()
 	cleanupCalled bool
+	formatter     formatter.Formatter
 }
 
 func NewTestContext() *SimpleTestContext {
-	return &SimpleTestContext{}
+	return &SimpleTestContext{
+		// TODO(marun) Enable color output
+		formatter: formatter.New(formatter.ColorModeNone),
+	}
 }
 
 func (*SimpleTestContext) Errorf(format string, args ...interface{}) {
 	log.Printf("error: "+format, args...)
+	// TODO(marun) How to include more details in the map e.g. the error and worker id?
+	assert.Unreachable(fmt.Sprintf("Assertion failure: "+format, args...), map[string]any{})
 }
 
 func (*SimpleTestContext) FailNow() {
-	panic(failNowMessage)
+	panic(FailNowMessage)
 }
 
 func (*SimpleTestContext) GetWriter() io.Writer {
@@ -54,7 +61,7 @@ func (tc *SimpleTestContext) Cleanup() {
 	var panicData any
 	if r := recover(); r != nil {
 		errorString, ok := r.(string)
-		if !ok || errorString != failNowMessage {
+		if !ok || errorString != FailNowMessage {
 			// Retain the panic data to raise after cleanup
 			panicData = r
 		} else {
@@ -87,15 +94,19 @@ func (tc *SimpleTestContext) DeferCleanup(cleanup func()) {
 	tc.cleanupFuncs = append(tc.cleanupFuncs, cleanup)
 }
 
-func (tc *SimpleTestContext) By(_ string, _ ...func()) {
-	tc.Errorf("By not yet implemented")
-	tc.FailNow()
+func (tc *SimpleTestContext) By(msg string, callback ...func()) {
+	tc.Outf("{{bold}}Step:{{/}} %s\n", msg)
+
+	if len(callback) == 1 {
+		callback[0]()
+	} else if len(callback) > 1 {
+		tc.Errorf("just one callback per By, please")
+		tc.FailNow()
+	}
 }
 
-// TODO(marun) Enable color output equivalent to GinkgoTestContext.Outf
-func (*SimpleTestContext) Outf(format string, args ...interface{}) {
-	s := formatter.F(format, args...)
-	log.Print(s)
+func (tc *SimpleTestContext) Outf(format string, args ...interface{}) {
+	log.Print(tc.formatter.F(format, args...))
 }
 
 // Helper simplifying use of a timed context by canceling the context on ginkgo teardown.
