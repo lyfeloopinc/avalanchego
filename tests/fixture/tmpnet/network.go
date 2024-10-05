@@ -463,21 +463,21 @@ func (n *Network) Bootstrap(ctx context.Context, w io.Writer) error {
 
 // Starts the provided node after configuring it for the network.
 func (n *Network) StartNode(ctx context.Context, w io.Writer, node *Node) error {
-	// This check is duplicative for a network that is starting, but ensures
-	// that individual node start/restart won't fail due to missing binaries.
-	pluginDir, err := n.getPluginDir()
-	if err != nil {
-		return err
-	}
+	// // This check is duplicative for a network that is starting, but ensures
+	// // that individual node start/restart won't fail due to missing binaries.
+	// pluginDir, err := n.getPluginDir()
+	// if err != nil {
+	// 	return err
+	// }
 
-	if err := n.EnsureNodeConfig(node); err != nil {
-		return err
-	}
+	// if err := n.EnsureNodeConfig(node); err != nil {
+	// 	return err
+	// }
 
-	// Check the VM binaries after EnsureNodeConfig to ensure node.RuntimeConfig is non-nil
-	if err := checkVMBinaries(w, n.Subnets, node.RuntimeConfig.AvalancheGoPath, pluginDir); err != nil {
-		return err
-	}
+	// // Check the VM binaries after EnsureNodeConfig to ensure node.RuntimeConfig is non-nil
+	// if err := checkVMBinaries(w, n.Subnets, node.RuntimeConfig.AvalancheGoPath, pluginDir); err != nil {
+	// 	return err
+	// }
 
 	bootstrapIPs, bootstrapIDs, err := n.getBootstrapIPsAndIDs(node)
 	if err != nil {

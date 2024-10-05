@@ -39,54 +39,6 @@ type bootstrapTestDetails struct {
 	StartTime time.Time `json:"startTime"`
 }
 
-// WaitForPodCondition watches the specified pod until the status includes the specified condition.
-func WaitForPodCondition(ctx context.Context, clientset *kubernetes.Clientset, namespace string, podName string, conditionType corev1.PodConditionType) error {
-	return waitForPodStatus(
-		ctx,
-		clientset,
-		namespace,
-		podName,
-		func(status *corev1.PodStatus) bool {
-			for _, condition := range status.Conditions {
-				if condition.Type == conditionType && condition.Status == corev1.ConditionTrue {
-					return true
-				}
-			}
-			return false
-		},
-	)
-}
-
-// waitForPodStatus watches the specified pod until the status is deemed acceptable by the provided test function.
-func waitForPodStatus(
-	ctx context.Context,
-	clientset *kubernetes.Clientset,
-	namespace string,
-	name string,
-	acceptable func(*corev1.PodStatus) bool,
-) error {
-	watch, err := clientset.CoreV1().Pods(namespace).Watch(ctx, metav1.SingleObject(metav1.ObjectMeta{Name: name}))
-	if err != nil {
-		return fmt.Errorf("failed to initiate watch of pod %s/%s: %w", namespace, name, err)
-	}
-
-	for {
-		select {
-		case event := <-watch.ResultChan():
-			pod, ok := event.Object.(*corev1.Pod)
-			if !ok {
-				continue
-			}
-
-			if acceptable(&pod.Status) {
-				return nil
-			}
-		case <-ctx.Done():
-			return fmt.Errorf("timeout waiting for pod readiness: %w", ctx.Err())
-		}
-	}
-}
-
 // setImageDetails updates the pod's owning statefulset with the image of the specified container and associated version details
 func setImageDetails(ctx context.Context, log logging.Logger, clientset *kubernetes.Clientset, namespace string, podName string, imageDetails *ImageDetails) error {
 	// Determine the name of the statefulset to update
