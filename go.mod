@@ -16,7 +16,7 @@ require (
 	github.com/cockroachdb/pebble v0.0.0-20230928194634-aa077af62593
 	github.com/compose-spec/compose-go v1.20.2
 	github.com/decred/dcrd/dcrec/secp256k1/v4 v4.1.0
-	github.com/ethereum/go-ethereum v1.13.14
+	github.com/ethereum/go-ethereum v1.13.15
 	github.com/google/btree v1.1.2
 	github.com/google/renameio/v2 v2.0.0
 	github.com/google/uuid v1.6.0
